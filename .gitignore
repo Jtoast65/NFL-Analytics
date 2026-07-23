@@ -1,0 +1,31 @@
+# Environment
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Data (large files, raw downloads)
+data/raw/
+*.parquet
+*.csv.gz
+
+# Models — joblib files are committed so Render can serve without retraining on cold start
+
+# Notebooks
+.ipynb_checkpoints/
+
+# IDE
+.DS_Store
+.vscode/
+.idea/
+
+# Alembic
+alembic/versions/__pycache__/

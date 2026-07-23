@@ -1,0 +1,20 @@
+[
+  {
+    "split": "Validation (2023)",
+    "brier_ours": 0.1527,
+    "brier_nflfastr": 0.15909,
+    "log_loss_ours": 0.46063,
+    "log_loss_nflfastr": 0.4746,
+    "roc_auc": 0.85875,
+    "n_plays": 41917
+  },
+  {
+    "split": "Test (2024)",
+    "brier_ours": 0.14,
+    "brier_nflfastr": 0.15698,
+    "log_loss_ours": 0.42601,
+    "log_loss_nflfastr": 0.46333,
+    "roc_auc": 0.88415,
+    "n_plays": 41469
+  }
+]
