@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: nfl-analytics-api
+    runtime: docker
+    repo: https://github.com/Jtoast65/nfl-analytics
+    branch: main
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: MODEL_VERSION
+        value: v1
+      - key: DATABASE_URL
+        sync: false  # set manually in Render dashboard — never commit real credentials
