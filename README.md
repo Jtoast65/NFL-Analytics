@@ -2,7 +2,7 @@
 
 End-to-end ML engineering portfolio project: play-by-play data ingestion → PostgreSQL → XGBoost win probability model → FastAPI → Streamlit dashboard.
 
-**Live demo:** [dashboard link] · **API docs:** [render link]/docs
+**API docs:** https://nfl-analytics-api-aku6.onrender.com/docs
 
 ---
 
@@ -124,7 +124,7 @@ make test
 
 ```bash
 # Real-time win probability
-curl -X POST https://YOUR_APP.onrender.com/predict \
+curl -X POST https://nfl-analytics-api-aku6.onrender.com/predict \
   -H "Content-Type: application/json" \
   -d '{
     "score_differential": -3,
@@ -140,13 +140,13 @@ curl -X POST https://YOUR_APP.onrender.com/predict \
 # spread_line convention: negative = home team favored
 
 # Game replay
-GET /games/{game_id}/win_probability
+GET https://nfl-analytics-api-aku6.onrender.com/games/{game_id}/win_probability
 
 # Player stats
-GET /players/{player_id}/stats
+GET https://nfl-analytics-api-aku6.onrender.com/players/{player_id}/stats
 
 # Leaderboard
-GET /leaderboard?season=2024&position=QB&limit=25
+GET https://nfl-analytics-api-aku6.onrender.com/leaderboard?season=2024&position=QB&limit=25
 ```
 
 > **Note:** The Render free tier spins down after 15 minutes of inactivity. The first request after idle takes ~30 seconds to cold-start — this is expected behavior for free-tier hosting.
@@ -157,10 +157,9 @@ GET /leaderboard?season=2024&position=QB&limit=25
 
 ### FastAPI → Render
 
-1. Push this repo to GitHub
-2. New Web Service on [Render](https://render.com) → connect repo → **Docker** runtime
-3. Set environment variables: `DATABASE_URL`, `MODEL_VERSION=v1`
-4. Deploy — Render builds from the `Dockerfile` at project root
+Deployed at https://nfl-analytics-api-aku6.onrender.com
+
+To redeploy: push to `main` — Render auto-deploys via the `render.yaml` blueprint.
 
 ### Streamlit Dashboard → Community Cloud
 
