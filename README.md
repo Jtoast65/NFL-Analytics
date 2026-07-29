@@ -2,7 +2,7 @@
 
 End-to-end ML engineering portfolio project: play-by-play data ingestion → PostgreSQL → XGBoost win probability model → FastAPI → Streamlit dashboard.
 
-**API docs:** https://nfl-analytics-api-aku6.onrender.com/docs
+**Live demo:** https://nfl-analytics-crwjgsvzmwtrhl75mwpmtp.streamlit.app · **API docs:** https://nfl-analytics-api-aku6.onrender.com/docs
 
 ---
 
@@ -163,14 +163,9 @@ To redeploy: push to `main` — Render auto-deploys via the `render.yaml` bluepr
 
 ### Streamlit Dashboard → Community Cloud
 
-1. Go to [share.streamlit.io](https://share.streamlit.io)
-2. Connect GitHub repo → main file: `dashboard/app.py`
-3. Add secrets (Settings → Secrets):
-   ```toml
-   DATABASE_URL = "postgresql://..."
-   API_URL = "https://your-app.onrender.com"
-   MODEL_VERSION = "v1"
-   ```
+Deployed at https://nfl-analytics-crwjgsvzmwtrhl75mwpmtp.streamlit.app
+
+To redeploy: push to `main` — Streamlit Cloud auto-deploys from GitHub.
 
 ---
 
