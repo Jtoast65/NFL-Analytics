@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routers import games, leaderboard, players, predict
+from api.routers import ask, games, leaderboard, players, predict
 
 app = FastAPI(
     title="NFL Analytics API",
@@ -30,6 +30,7 @@ app.include_router(predict.router)
 app.include_router(players.router)
 app.include_router(games.router)
 app.include_router(leaderboard.router)
+app.include_router(ask.router)
 
 
 @app.get("/health", tags=["meta"])

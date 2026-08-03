@@ -26,6 +26,14 @@ pydantic>=2.0.0
 streamlit>=1.32.0
 plotly>=5.19.0
 
+# RAG Q&A layer (Extension 1)
+langchain>=0.3.0
+langchain-openai>=0.2.0
+langchain-postgres>=0.0.12
+openai>=1.40.0
+pgvector>=0.3.0
+tiktoken>=0.7.0
+
 # Testing
 pytest>=8.0.0
 

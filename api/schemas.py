@@ -32,6 +32,29 @@ class PredictionResponse(BaseModel):
     model_version: str
 
 
+# ── /ask (RAG Q&A) ────────────────────────────────────────────────────────────
+
+class AskRequest(BaseModel):
+    question: str = Field(..., min_length=3, description="Natural-language question about NFL stats")
+    k: int = Field(default=8, ge=1, le=15, description="Number of documents to retrieve")
+
+    model_config = {"json_schema_extra": {"example": {
+        "question": "Who had the most rushing yards in 2024?", "k": 6,
+    }}}
+
+
+class Source(BaseModel):
+    doc_type: str
+    ref_id: str
+    snippet: str
+    score: float
+
+
+class AskResponse(BaseModel):
+    answer: str
+    sources: list[Source]
+
+
 # ── /players ─────────────────────────────────────────────────────────────────
 
 class WeeklyStatRow(BaseModel):
