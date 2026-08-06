@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: mart_player_season
+    description: "Regular-season totals per player-season with completion rate."
+    columns:
+      - name: player_id
+        tests: [not_null]
+      - name: season
+        tests: [not_null]
+      - name: fantasy_points_ppr
+        description: "Season PPR fantasy total."
+
+  - name: mart_leaderboard
+    description: "Player-seasons ranked by PPR, overall and within position."
+    columns:
+      - name: ppr_rank_overall
+        tests: [not_null]
+      - name: ppr_rank_position
+        tests: [not_null]
+
+  - name: mart_game_summary
+    description: "Per-game result and win-probability summary."
+    columns:
+      - name: game_id
+        tests: [not_null, unique]

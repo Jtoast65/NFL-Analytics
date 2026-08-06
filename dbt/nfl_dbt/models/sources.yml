@@ -1,0 +1,27 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw tables populated by the ingestion scripts (nflreadpy → Postgres)."
+    schema: public
+    tables:
+      - name: games
+        description: "One row per NFL game."
+        columns:
+          - name: game_id
+            tests: [not_null, unique]
+      - name: plays
+        description: "Play-by-play with nflfastR + model win probability."
+        columns:
+          - name: play_id
+            tests: [not_null, unique]
+      - name: players
+        description: "Player roster / bio."
+        columns:
+          - name: player_id
+            tests: [not_null, unique]
+      - name: player_stats
+        description: "Weekly player box-score stats."
+        columns:
+          - name: stat_id
+            tests: [not_null, unique]

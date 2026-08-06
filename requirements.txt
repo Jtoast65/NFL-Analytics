@@ -34,6 +34,12 @@ openai>=1.40.0
 pgvector>=0.3.0
 tiktoken>=0.7.0
 
+# Orchestration + cloud (Extension 2) — dbt/Airflow deps live in airflow/requirements.txt
+dbt-core>=1.8.0
+dbt-postgres>=1.8.0
+pyspark>=3.5.0
+boto3>=1.34.0
+
 # Testing
 pytest>=8.0.0
 

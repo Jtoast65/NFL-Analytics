@@ -1,0 +1,12 @@
+# Extra Python deps baked into the Airflow image so the DAG can run the pipeline.
+apache-airflow-providers-amazon>=8.0.0
+dbt-postgres>=1.8.0
+boto3>=1.34.0
+# Ingestion + retrain deps (the DAG shells out to the project scripts):
+nflreadpy>=0.1.0
+polars>=1.0.0
+psycopg2-binary>=2.9.9
+pandas>=2.0.0
+xgboost>=2.0.0
+scikit-learn>=1.4.0
+joblib>=1.3.0

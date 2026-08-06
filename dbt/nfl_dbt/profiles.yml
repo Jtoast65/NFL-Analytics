@@ -1,0 +1,20 @@
+# dbt connection profile. Reads from environment variables so no credentials are
+# committed. Set these in your shell / Airflow before running dbt:
+#   DBT_HOST, DBT_USER, DBT_PASSWORD, DBT_DBNAME (default postgres), DBT_PORT (default 5432)
+#
+# After the RDS migration these point at the RDS endpoint; during local dev they can
+# point at the current Supabase DB.
+nfl_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('DBT_HOST') }}"
+      user: "{{ env_var('DBT_USER', 'postgres') }}"
+      password: "{{ env_var('DBT_PASSWORD') }}"
+      port: "{{ env_var('DBT_PORT', '5432') | int }}"
+      dbname: "{{ env_var('DBT_DBNAME', 'postgres') }}"
+      schema: analytics
+      sslmode: require
+      threads: 4
+      keepalives_idle: 0

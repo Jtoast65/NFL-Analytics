@@ -29,3 +29,13 @@ data/raw/
 
 # Alembic
 alembic/versions/__pycache__/
+
+# dbt build artifacts
+dbt/nfl_dbt/target/
+dbt/nfl_dbt/logs/
+dbt/nfl_dbt/dbt_packages/
+
+# Spark
+spark-warehouse/
+metastore_db/
+dbt/nfl_dbt/.user.yml
