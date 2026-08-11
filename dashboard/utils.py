@@ -19,8 +19,10 @@ def api_get(path: str, params: dict | None = None):
     return r.json()
 
 
-def api_post(path: str, payload: dict):
+def api_post(path: str, payload: dict, timeout: int = 90):
+    # Default is generous: /ask (RAG) makes OpenAI calls (~10s warm) and the API
+    # runs on Render free tier, which can cold-start (~50s) after inactivity.
     url = get_api_url() + path
-    r = requests.post(url, json=payload, timeout=10)
+    r = requests.post(url, json=payload, timeout=timeout)
     r.raise_for_status()
     return r.json()

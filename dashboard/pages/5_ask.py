@@ -33,7 +33,8 @@ question = st.text_input(
 if st.button("Ask", type="primary") or question:
     if not question.strip():
         st.stop()
-    with st.spinner("Retrieving documents and generating an answer…"):
+    with st.spinner("Retrieving documents and generating an answer… "
+                    "(the first request can take up to a minute if the API was idle)"):
         try:
             result = api_post("/ask", {"question": question, "k": 6})
         except Exception as e:
