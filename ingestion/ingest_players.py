@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import nflreadpy as nfl
 nfl.config.update_config(cache_mode="filesystem")
-from ingestion.db import get_conn, upsert
+from ingestion.db import get_conn, save_raw, upsert
 
 COLS = {
     "gsis_id": "player_id",
@@ -36,6 +36,7 @@ def run() -> None:
     df = df.drop_nulls(subset=["player_id"])
     df = df.unique(subset=["player_id"], keep="last")
 
+    save_raw(df, "players")
     rows = df.to_dicts()
     update_cols = [v for k, v in COLS.items() if v != "player_id"]
 

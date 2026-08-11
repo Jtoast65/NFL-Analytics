@@ -2,3 +2,5 @@
 airflow_settings.yaml
 logs/
 .astro/
+# Local symlink to the project repo, mounted into containers (see README).
+include/

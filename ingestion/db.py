@@ -1,6 +1,7 @@
 """Database connection and bulk-upsert helpers for ingestion scripts."""
 import os
 from contextlib import contextmanager
+from pathlib import Path
 
 import psycopg2
 import psycopg2.extras
@@ -9,6 +10,23 @@ from dotenv import load_dotenv
 load_dotenv()
 
 _DATABASE_URL = os.environ["DATABASE_URL"]
+
+# Raw parquet lands here so the orchestration DAG's load_to_s3 task has a
+# file-based "raw layer" to ship to S3 (see airflow/dags/nfl_pipeline_dag.py).
+_RAW_DIR = Path(__file__).resolve().parent.parent / "data" / "raw"
+
+
+def save_raw(df, name: str) -> Path:
+    """Persist a cleaned ingestion DataFrame to data/raw/<name>.parquet.
+
+    Accepts a polars DataFrame (what nflreadpy returns); the parquet mirror is
+    what gets uploaded to s3://$S3_BUCKET/raw/ by the pipeline DAG.
+    """
+    path = _RAW_DIR / f"{name}.parquet"
+    path.parent.mkdir(parents=True, exist_ok=True)  # `name` may include subdirs (e.g. plays/season=2024)
+    df.write_parquet(path)
+    print(f"  Wrote raw parquet: {path.relative_to(_RAW_DIR.parent.parent)} ({df.height:,} rows)")
+    return path
 
 
 @contextmanager

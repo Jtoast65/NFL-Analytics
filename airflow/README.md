@@ -26,11 +26,17 @@ Runs the `nfl_pipeline` DAG: **ingest_raw → load_to_s3 → dbt_build → retra
    PROJECT_DIR=/usr/local/airflow/include/nfl-analytics
    ```
 
-2. Make the repo available to the DAG by symlinking it into `include/`
-   (Astro mounts `include/` into the containers):
-   ```bash
-   mkdir -p include
-   ln -s ../.. include/nfl-analytics    # from the airflow/ directory
+2. Make the repo available to the DAG. The tasks shell out to the project scripts
+   at `/usr/local/airflow/include/nfl-analytics`, provided by a **runtime bind
+   mount** in `docker-compose.override.yml` (a `include/` symlink does NOT work —
+   Docker rejects a symlink that escapes the build context). The override's host
+   path is absolute; update it if you move the repo:
+   ```yaml
+   # docker-compose.override.yml (already committed)
+   services:
+     scheduler:
+       volumes:
+         - /ABS/PATH/TO/nfl-analytics:/usr/local/airflow/include/nfl-analytics:rw
    ```
 
 ## Run
@@ -43,7 +49,12 @@ astro dev stop
 ```
 
 ## Notes
-- `ingest_raw`, `dbt_build`, `retrain`, and `rag_reindex` shell out to the mounted
-  project scripts; their Python deps are baked into the image via `requirements.txt`.
-- `load_to_s3` uses boto3 with the `AWS_*` env vars.
+- `ingest_raw`, `retrain`, and `rag_reindex` run from an isolated **project venv**
+  (`/usr/local/airflow/project_venv`, built from `project_requirements.txt`);
+  `dbt_build` runs from an isolated **dbt venv** (`dbt_venv`, `dbt_requirements.txt`).
+  These are kept out of the Airflow environment on purpose — installing dbt-core
+  into the Airflow env triggers a pip `ResolutionTooDeep` failure.
+- `load_to_s3` runs in the Airflow env and uses boto3 (in `requirements.txt`) with
+  the `AWS_*` env vars.
+- Validate DAG + image without booting anything: `astro dev parse`.
 - Schedule is `@weekly`; trigger manually from the UI for a demo.

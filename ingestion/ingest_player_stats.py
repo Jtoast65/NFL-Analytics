@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import nflreadpy as nfl
 nfl.config.update_config(cache_mode="filesystem")
-from ingestion.db import get_conn, upsert
+from ingestion.db import get_conn, save_raw, upsert
 
 SEASONS = list(range(2016, 2026))  # update upper bound each offseason
 
@@ -55,6 +55,7 @@ def run(seasons: list[int]) -> None:
         import polars as pl
         df = df.with_columns(pl.lit("REG").alias("season_type"))
 
+    save_raw(df, "player_stats")
     rows = df.to_dicts()
     update_cols = [v for k, v in available.items() if v not in ("player_id", "season", "week", "season_type")]
 

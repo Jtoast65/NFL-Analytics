@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import nflreadpy as nfl
 nfl.config.update_config(cache_mode="filesystem")
-from ingestion.db import get_conn, upsert
+from ingestion.db import get_conn, save_raw, upsert
 
 SEASONS = list(range(2016, 2026))  # 2016–2025 inclusive
 
@@ -40,6 +40,7 @@ def run(seasons: list[int]) -> None:
     df = df.rename({k: v for k, v in COLS.items() if k in df.columns and k != v})
     df = df.drop_nulls(subset=["game_id", "home_team", "away_team"])
 
+    save_raw(df, "games")
     rows = df.to_dicts()
     update_cols = [c for c in COLS.values() if c != "game_id"]
 

@@ -1,0 +1,17 @@
+# Bind-mounts the project repo into the Airflow containers at runtime so the DAG's
+# BashOperators can shell out to the project scripts (ingestion, dbt, models, rag).
+# Used by `astro dev start`. A runtime bind mount avoids putting the repo (with its
+# .git/.venv/data) into the image build context, and sidesteps the invalid-symlink
+# error that an include/ symlink caused during `astro dev parse`.
+#
+# NOTE: the host path is absolute and machine-specific. Update it if the repo moves.
+services:
+  scheduler:
+    volumes:
+      - /Users/joeysandoval/nfl-analytics:/usr/local/airflow/include/nfl-analytics:rw
+  triggerer:
+    volumes:
+      - /Users/joeysandoval/nfl-analytics:/usr/local/airflow/include/nfl-analytics:rw
+  webserver:
+    volumes:
+      - /Users/joeysandoval/nfl-analytics:/usr/local/airflow/include/nfl-analytics:rw

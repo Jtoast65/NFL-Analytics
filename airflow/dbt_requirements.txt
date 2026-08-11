@@ -1,0 +1,4 @@
+# Installed into an isolated venv (/usr/local/airflow/dbt_venv) by the Dockerfile.
+# dbt-core's tight transitive pins conflict with Airflow's when installed into the
+# same environment, so dbt gets its own venv. The dbt_build task calls this dbt.
+dbt-postgres==1.11.0

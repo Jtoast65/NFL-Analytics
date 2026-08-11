@@ -21,6 +21,11 @@ from airflow.operators.python import PythonOperator
 # Where the repo is mounted inside the Airflow worker.
 PROJECT_DIR = os.environ.get("PROJECT_DIR", "/usr/local/airflow/include/nfl-analytics")
 
+# Isolated venvs baked into the image (see Dockerfile). The project scripts and
+# dbt run from these, not the Airflow environment, to avoid dependency conflicts.
+PROJECT_PY = "/usr/local/airflow/project_venv/bin/python"
+DBT_BIN = "/usr/local/airflow/dbt_venv/bin/dbt"
+
 default_args = {
     "owner": "nfl-analytics",
     "retries": 1,
@@ -52,6 +57,9 @@ with DAG(
     schedule="@weekly",
     start_date=pendulum.datetime(2026, 1, 1, tz="UTC"),
     catchup=False,
+    # The pipeline mutates shared RDS tables; never let two runs ingest at once
+    # (concurrent upserts deadlock). One run at a time, queue the rest.
+    max_active_runs=1,
     default_args=default_args,
     tags=["nfl", "etl", "ml"],
 ) as dag:
@@ -60,10 +68,10 @@ with DAG(
         task_id="ingest_raw",
         bash_command=(
             f"cd {PROJECT_DIR} && "
-            "python ingestion/ingest_games.py && "
-            "python ingestion/ingest_players.py && "
-            "python ingestion/ingest_plays.py && "
-            "python ingestion/ingest_player_stats.py"
+            f"{PROJECT_PY} ingestion/ingest_games.py && "
+            f"{PROJECT_PY} ingestion/ingest_players.py && "
+            f"{PROJECT_PY} ingestion/ingest_plays.py && "
+            f"{PROJECT_PY} ingestion/ingest_player_stats.py"
         ),
     )
 
@@ -74,22 +82,22 @@ with DAG(
 
     dbt_build = BashOperator(
         task_id="dbt_build",
-        bash_command=f"cd {PROJECT_DIR}/dbt/nfl_dbt && dbt build --profiles-dir .",
+        bash_command=f"cd {PROJECT_DIR}/dbt/nfl_dbt && {DBT_BIN} build --profiles-dir .",
     )
 
     retrain = BashOperator(
         task_id="retrain",
         bash_command=(
             f"cd {PROJECT_DIR} && "
-            "python features/build_features.py && "
-            "python models/train.py && "
-            "python models/batch_predict.py"
+            f"{PROJECT_PY} features/build_features.py && "
+            f"{PROJECT_PY} models/train.py && "
+            f"{PROJECT_PY} models/batch_predict.py"
         ),
     )
 
     rag_reindex = BashOperator(
         task_id="rag_reindex",
-        bash_command=f"cd {PROJECT_DIR} && python rag/embed_store.py",
+        bash_command=f"cd {PROJECT_DIR} && {PROJECT_PY} rag/embed_store.py",
     )
 
     ingest_raw >> load_to_s3 >> dbt_build >> retrain >> rag_reindex

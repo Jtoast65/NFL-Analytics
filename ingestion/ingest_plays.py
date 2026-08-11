@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import polars as pl
 import nflreadpy as nfl
 nfl.config.update_config(cache_mode="filesystem")  # persist downloads across runs
-from ingestion.db import get_conn, upsert
+from ingestion.db import get_conn, save_raw, upsert
 
 SEASONS = list(range(2016, 2026))  # update upper bound each offseason
 BATCH_SIZE = 10_000
@@ -78,6 +78,7 @@ def process_season(season: int) -> None:
 
     df = df.drop_nulls(subset=["game_id", "play_idx"])
 
+    save_raw(df, f"plays/season={season}")  # partitioned so each season persists
     rows = df.to_dicts()
     update_cols = [v for v in available.values() if v not in ("game_id", "play_idx")] + ["is_home_possession"]
 
